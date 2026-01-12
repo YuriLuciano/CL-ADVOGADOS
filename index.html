@@ -7,7 +7,6 @@
     <title>CL Advogados</title>
     <link rel="icon" href="logo marca d agua.png" type="image/png">
     
-
     <style>
         /* =========================================
            VARIÁVEIS E RESET
@@ -32,7 +31,7 @@
         body { line-height: 1.6; color: var(--text-dark); background-color: var(--bg-light); overflow-x: hidden; }
 
         /* =========================================
-           CABEÇALHO
+           CABEÇALHO & MENU
            ========================================= */
         header {
             background-color: var(--bg-light);
@@ -46,7 +45,10 @@
             box-shadow: 0 2px 15px rgba(0,0,0,0.05);
             min-height: 90px;
         }
-        .logo img { height: 100px; width: auto; }
+
+        .logo img { height: 90px; width: auto; transition: var(--transition); }
+
+        /* Menu Desktop */
         nav ul { display: flex; list-style: none; gap: 25px; }
         nav ul li a {
             color: var(--text-dark);
@@ -58,6 +60,17 @@
             transition: 0.3s;
         }
         nav ul li a:hover { color: var(--accent-gold); }
+
+        /* Ícone Menu Mobile */
+        .mobile-menu-icon {
+            display: none;
+            cursor: pointer;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .mobile-menu-icon div {
+            width: 25px; height: 3px; background-color: var(--text-dark); transition: 0.3s;
+        }
 
         /* =========================================
            HERO SECTION
@@ -103,16 +116,16 @@
             content: ''; position: absolute; top: -15px; left: -15px; width: 100%; height: 100%;
             border: 2px solid var(--accent-gold); z-index: 0;
         }
-        .about-image img { width: 100%; height: 500px; object-fit: cover; position: relative; z-index: 1; box-shadow: 15px 15px 30px rgba(0,0,0,0.1); }
+        .about-image img { width: 100%; height: auto; max-height: 500px; object-fit: cover; position: relative; z-index: 1; box-shadow: 15px 15px 30px rgba(0,0,0,0.1); }
         .about-text { flex: 1.2; }
         .subtitle { color: var(--accent-gold); text-transform: uppercase; font-weight: 700; letter-spacing: 2px; font-size: 0.85rem; display: block; margin-bottom: 0.5rem; }
-        .about-text h2 { font-size: 2.8rem; margin-bottom: 1.5rem; line-height: 1.1; }
+        .about-text h2 { font-size: clamp(2rem, 4vw, 2.8rem); margin-bottom: 1.5rem; line-height: 1.1; }
         .values-list { list-style: none; margin-top: 2rem; }
         .values-list li { margin-bottom: 12px; padding-left: 30px; position: relative; }
         .values-list li::before { content: '✓'; position: absolute; left: 0; color: var(--accent-gold); font-weight: bold; }
 
         /* =========================================
-           ÁREAS (CARDS) - SEM GIRO
+           ÁREAS (CARDS ALINHADOS)
            ========================================= */
         .areas { padding: 6rem 5%; background-color: #fcfcfc; text-align: center; }
         .grid-areas {
@@ -121,6 +134,7 @@
             gap: 30px; 
             max-width: 1200px; 
             margin: 3rem auto 0; 
+            align-items: stretch; /* Garante que os itens do grid tenham a mesma altura na linha */
         }
         
         .card {
@@ -129,31 +143,21 @@
             border: 1px solid #eee;
             border-radius: 4px;
             display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            align-items: center;
+            flex-direction: column; /* Organiza o conteúdo em coluna */
             transition: var(--transition);
             box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+            text-align: center;
         }
 
-        .card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
-            border-color: var(--accent-gold);
-        }
+        .card:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); border-color: var(--accent-gold); }
 
-        .card h3 { 
-            color: var(--accent-gold); 
-            margin-bottom: 15px; 
-            text-transform: uppercase; 
-            font-size: 1.4rem; 
-        }
+        .card h3 { color: var(--accent-gold); margin-bottom: 15px; text-transform: uppercase; font-size: 1.4rem; }
 
         .card p {
             font-size: 0.95rem;
             color: var(--text-gray);
             margin-bottom: 30px;
-            min-height: 60px; /* Mantém o alinhamento dos botões */
+            flex-grow: 1; /* Esse é o segredo: empurra os botões para baixo para alinhar todos */
         }
 
         .card-buttons {
@@ -161,6 +165,7 @@
             display: flex;
             flex-direction: column;
             gap: 12px;
+            margin-top: auto; /* Garante que fiquem no final */
         }
         
         .btn-card { 
@@ -174,7 +179,6 @@
             transition: 0.3s; 
             text-decoration: none; 
             display: block; 
-            text-align: center;
         }
         
         .btn-agendar { background: var(--accent-gold); color: white; }
@@ -194,12 +198,30 @@
         form { display: flex; flex-direction: column; gap: 15px; }
         form input, form textarea { padding: 15px; border: 1px solid #ddd; outline: none; width: 100%; font-size: 1rem; }
         .status-msg { padding: 15px; margin-top: 15px; border-radius: 4px; display: none; text-align: center; font-weight: bold; }
-        .status-msg.success { display: block; background: #d4edda; color: #155724; }
 
         footer { background: var(--footer-dark); color: #888; text-align: center; padding: 3rem; font-size: 0.8rem; }
 
+        /* =========================================
+           RESPONSIVIDADE (MOBILE)
+           ========================================= */
         @media (max-width: 992px) {
-            .about-container { flex-direction: column; text-align: center; }
+            header { padding: 0.5rem 3%; }
+            .about-container { flex-direction: column; text-align: center; gap: 40px; }
+            .about { padding: 4rem 5%; }
+            .values-list li { text-align: left; }
+        }
+
+        @media (max-width: 768px) {
+            .mobile-menu-icon { display: flex; }
+            nav {
+                position: absolute; top: 90px; left: -100%; width: 100%; background: #fff;
+                transition: 0.4s; box-shadow: 0 10px 10px rgba(0,0,0,0.05);
+            }
+            nav.active { left: 0; }
+            nav ul { flex-direction: column; padding: 2rem; gap: 15px; text-align: center; }
+            
+            .hero { height: 60vh; }
+            .logo img { height: 70px; }
         }
     </style>
 </head>
@@ -207,7 +229,10 @@
 
     <header>
         <div class="logo"><img src="LOGO CL 1.png" alt="CL Advogados"></div>
-        <nav>
+        <div class="mobile-menu-icon" id="menu-toggle">
+            <div></div><div></div><div></div>
+        </div>
+        <nav id="nav-list">
             <ul>
                 <li><a href="#home">Início</a></li>
                 <li><a href="#sobre">Sobre</a></li>
@@ -233,8 +258,10 @@
             <div class="about-text">
                 <span class="subtitle">Tradição e Modernidade</span>
                 <h2>Sobre o Escritório</h2>
-                <p><strong> Dr. Fabricio Luciano</strong>, fundador da <strong>CL ADVOGADOS</strong>, conta com larga experiência profissional, nosso escritório conta com profissionais capacitados e especializados na resolução de litígios nas áreas do direito civil, direito médico, trabalhista, penal, família e sucessões e tributário, atuando nas vias administrativa e judicial.</p>
+                <p><strong>Dr. Fabricio Luciano</strong>, fundador da <strong>CL ADVOGADOS</strong>, conta com larga experiência profissional. Nosso escritório conta com profissionais capacitados e especializados na resolução de litígios nas áreas do direito civil, direito médico, trabalhista, penal, família e sucessões e tributário, atuando nas vias administrativa e judicial.</p>
+                <br>
                 <p>Cada caso é uma situação ímpar. Cada cliente tem necessidades distintas e merece atenção e respeito por isso. Por estas razões, o trabalho é metodologicamente planejado para atender a cada consulta de forma a diminuir os riscos e aumentar as chances de êxito nas demandas.</p>
+                <br>
                 <p>A <strong>CL Advogados</strong> oferece uma advocacia artesanal e estratégica, onde cada caso é tratado com exclusividade e foco total no resultado. Entendemos que o direito exige não apenas conhecimento técnico, mas uma visão atenta aos detalhes humanos.</p>
 
                 <ul class="values-list">
@@ -312,16 +339,19 @@
             <div class="contact-info">
                 <h3>Escritório</h3>
                 <p>📍 Rua Orense 41, Sala 720 - Diadema, Centro</p>
+                <br>
+                <p><strong>Dr. Fabricio Luciano</strong></p>
                 <p>📞 (11) 91741-2180</p>
                 <p>✉️ fabricioluc.adv@gmail.com</p>
                 <br>
+                <p><strong>Yuri Luciano</strong></p>
                 <p>📞 (11) 96326-2467</p>
                 <p>✉️ yuriluc123@gmail.com</p>
             </div>
             <form id="contact-form" action="https://formspree.io/f/mrebnqww" method="POST">
                 <input type="text" name="nome" placeholder="Seu Nome" required>
                 <input type="email" name="email" placeholder="Seu E-mail" required>
-                <input type="number" name="numero" placeholder="Seu número" required>
+                <input type="number" name="numero" placeholder="Seu WhatsApp" required>
                 <textarea name="mensagem" rows="4" placeholder="Descreva brevemente seu caso para nossa triagem..." required></textarea>
                 <button type="submit" id="contact-button" class="btn-cta">Enviar Mensagem</button>
                 <div id="contact-status" class="status-msg"></div>
@@ -332,6 +362,20 @@
     <footer><p>&copy; 2026 CL ADVOGADOS. TODOS OS DIREITOS RESERVADOS.</p></footer>
 
     <script>
+        // Menu Mobile Toggle
+        const menuToggle = document.getElementById('menu-toggle');
+        const navList = document.getElementById('nav-list');
+
+        menuToggle.addEventListener('click', () => {
+            navList.classList.toggle('active');
+        });
+
+        // Fechar menu ao clicar em links mobile
+        document.querySelectorAll('nav ul li a').forEach(link => {
+            link.addEventListener('click', () => navList.classList.remove('active'));
+        });
+
+        // Formspree logic
         const form = document.getElementById("contact-form");
         form.addEventListener("submit", async (e) => {
             e.preventDefault();
@@ -347,10 +391,16 @@
             }).then(response => {
                 btn.disabled = false;
                 btn.innerText = "Enviar Mensagem";
+                status.style.display = "block";
                 if (response.ok) {
-                    status.innerHTML = "Obrigado! Recebemos sua mensagem e entraremos em contato em breve.";
-                    status.className = "status-msg success";
+                    status.innerHTML = "Obrigado! Recebemos sua mensagem.";
+                    status.style.color = "#155724";
+                    status.style.background = "#d4edda";
                     form.reset();
+                } else {
+                    status.innerHTML = "Erro ao enviar. Tente novamente.";
+                    status.style.color = "#721c24";
+                    status.style.background = "#f8d7da";
                 }
             });
         });
